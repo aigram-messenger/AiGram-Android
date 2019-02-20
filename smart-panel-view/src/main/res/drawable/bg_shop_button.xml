@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:drawable="@drawable/bg_shop_button_available_free"
+        app:state_available_free="true"
+        app:state_available_paid="false"
+        app:state_installed_enabled="false"
+        app:state_installed_disabled="false" />
+
+    <item
+        android:drawable="@drawable/bg_shop_button_available_paid"
+        app:state_available_free="false"
+        app:state_available_paid="true"
+        app:state_installed_enabled="false"
+        app:state_installed_disabled="false" />
+
+    <item
+        android:drawable="@drawable/bg_shop_button_installed_enable"
+        app:state_available_free="false"
+        app:state_available_paid="false"
+        app:state_installed_enabled="true"
+        app:state_installed_disabled="false" />
+
+    <item
+        android:drawable="@drawable/bg_shop_button_installed_disable"
+        app:state_available_free="false"
+        app:state_available_paid="false"
+        app:state_installed_enabled="false"
+        app:state_installed_disabled="true" />
+</selector>

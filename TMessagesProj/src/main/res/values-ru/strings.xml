@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="AutoBots">Автоматические боты</string>
+    <string name="ShareTelegram">Поделиться AiGram…</string>
+    <string name="InviteToTelegram">ПРИГЛАСИТЬ В AIGRAM</string>
+    <string name="InviteFriendsHelp">Выберите людей, которых хотите пригласить в AiGram</string>
+    <string name="InviteText2">Привет, вместо Telegram я использую AiGram – мессенджер с Искусственным интеллектом!
+Скачай его здесь %1$s и общайся с пользователями Telegram используя нейроботов-помощников для переписок.</string>
+    <string name="InviteText3">Привет, я общаюсь здесь с тобой используя нейроботов – помощников для переписок. Скачай AiGram – мессенджер с Искусственным интеллектом и продолжай общаться с пользователями Telegram в новом формате!\n%1$s</string>
+    <string name="TelegramVersion">AiGram для Android %1$s</string>
+
+    <string name="Page1Title">AiGram</string>
+    <string name="Page2Title">Быстрый</string>
+    <string name="Page3Title">Умный</string>
+    <string name="Page4Title">Безопасный</string>
+    <string name="Page5Title">Мощный</string>
+    <string name="Page6Title">Облачный</string>
+
+    <string name="Page1Message">Самый интеллектуальный и безопасный\n мессенджер в мире.</string>
+    <string name="Page2Message">Доставка сообщений быстрее чем\n в любом другом приложении.</string>
+    <string name="Page3Message">Искусственный интеллект поможет в\n общении и сделает его ярче.</string>
+    <string name="Page4Message">Ваши сообщения в безопасности от\n хакерских атак.</string>
+    <string name="Page5Message">Не имеет ограничений на размер\n ваших файлов и чатов.</string>
+    <string name="Page6Message">Доступ к сообщениям со\n множества устройств.</string>
+
+    <string name="UsernameHelp">Вы можете выбрать публичное имя пользователя в **AiGram**. В этом случае другие люди смогут найти Вас по такому имени и связаться, не зная Вашего телефона.\n\nВы можете использовать символы **a–z**, **0–9** и подчёркивания. Минимальная длина – **5** символов.</string>
+    <string name="DeleteAccountHelp">Если Вы ни разу не заглянете в AiGram за это время, аккаунт будет удалён вместе со всеми сообщениями и контактами.</string>
+
+</resources>

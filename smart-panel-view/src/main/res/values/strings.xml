@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">SmartPopup</string>
+    <string name="ads_label">ads</string>
+    <string name="bot_label">NeuroBot</string>
+    <string name="shop_button_label_enable">Включить</string>
+    <string name="shop_button_label_disable">Отключить</string>
+    <string name="shop_button_label_price">%1$d $</string>
+    <string name="neuro_bot_info_date_adedd_placeholder">Добавлен %1$s</string>
+    <string name="neuro_bot_info_date_updated_placeholder">Обновлен %1$s</string>
+    <string name="phrases">Фраз</string>
+    <string name="themes">Тем</string>
+    <string name="installs">Установок</string>
+    <string name="rate_bot">Оцените бота</string>
+    <string name="close">Закрыть</string>
+    <string name="receive">Получить</string>
+    <string name="developer">Разработчик: AiGram Messenger</string>
+    <string name="error_no_internet">Проверьте интернет соединение</string>
+    <string name="new_bot">NEW</string>
+    <string name="bot_info">Подробно о боте</string>
+    <string name="bot_share">Поделиться</string>
+    <string name="bot_disable">Отключить бота</string>
+
+    <plurals name="ratings">
+        <item quantity="zero">оценок</item>
+        <item quantity="one">оценка</item>
+        <item quantity="two">оценки</item>
+        <item quantity="few">оценки</item>
+        <item quantity="other">оценок</item>
+    </plurals>
+</resources>

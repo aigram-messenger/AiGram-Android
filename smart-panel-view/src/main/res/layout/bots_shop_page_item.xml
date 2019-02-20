@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/bot_avatar"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_margin="@dimen/margin_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bot_name"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/bot_avatar_rounded_confucius" />
+
+    <TextView
+        android:id="@+id/bot_new_label"
+        style="@style/BotNewLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/new_bot"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/bot_type"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/bot_avatar"
+        app:layout_constraintStart_toStartOf="@+id/bot_name"
+        app:layout_constraintTop_toBottomOf="@+id/bot_name" />
+
+    <TextView
+        android:id="@+id/bot_name"
+        style="@style/BotShopNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bot_type"
+        app:layout_constraintEnd_toStartOf="@+id/shop_button"
+        app:layout_constraintStart_toEndOf="@+id/bot_avatar"
+        app:layout_constraintTop_toTopOf="@+id/bot_avatar"
+        app:layout_constraintVertical_chainStyle="spread"
+        tools:text="Churchill" />
+
+    <TextView
+        android:id="@+id/bot_type"
+        style="@style/BotShopDescriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bot_label"
+        app:layout_constraintEnd_toStartOf="@+id/shop_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/bot_new_label"
+        app:layout_constraintTop_toBottomOf="@+id/bot_name"
+        tools:text="NeuroBot" />
+
+    <TextView
+        android:id="@+id/bot_description"
+        style="@style/BotShopDescriptionText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bot_avatar"
+        app:layout_constraintTop_toBottomOf="@+id/bot_type"
+        tools:text="Искусство реально понимает под собой неоднозначный даосизм Искусство реально понимает под собой неоднозначный даосизм " />
+
+    <com.smedialink.smartpanel.view.SmartShopButton
+        android:id="@+id/shop_button"
+        android:layout_width="@dimen/shop_button_width"
+        android:layout_height="@dimen/shop_button_height"
+        android:layout_margin="@dimen/margin_normal"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:gravity="center"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bot_name"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Buy" />
+
+</android.support.constraint.ConstraintLayout>

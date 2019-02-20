@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/neuroBotAvatar"
+                android:layout_width="@dimen/avatar_size"
+                android:layout_height="@dimen/avatar_size"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/bot_avatar_rounded_churchill" />
+
+            <TextView
+                android:id="@+id/neuroBotName"
+                style="@style/BoldBlackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                app:layout_constraintStart_toEndOf="@+id/neuroBotAvatar"
+                app:layout_constraintTop_toTopOf="@+id/neuroBotAvatar"
+                tools:text="Churchill" />
+
+            <TextView
+                android:id="@+id/bot_type"
+                style="@style/BotShopDescriptionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bot_label"
+                app:layout_constraintBottom_toTopOf="@+id/tags_container"
+                app:layout_constraintStart_toStartOf="@+id/neuroBotName"
+                app:layout_constraintTop_toBottomOf="@+id/neuroBotName" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/tags_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:alignContent="space_between"
+                app:alignItems="baseline"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/neuroBotAvatar"
+                app:layout_constraintTop_toBottomOf="@+id/bot_type" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@color/colorSmartPanelBackground"
+            app:layout_constraintBottom_toTopOf="@+id/bot_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/ratingNumber"
+                style="@style/BoldBlackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:drawableStart="@drawable/ic_star_black"
+                android:drawableLeft="@drawable/ic_star_black"
+                android:drawablePadding="@dimen/padding_tiny"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/responses"
+                app:layout_constraintStart_toStartOf="@+id/responses"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="4.8" />
+
+            <TextView
+                android:id="@+id/responses"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:gravity="center"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/installCountText"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ratingNumber"
+                tools:text="1к отзывов " />
+
+            <TextView
+                android:id="@+id/installCountText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:gravity="center"
+                android:text="@string/installs"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/responses"
+                app:layout_constraintEnd_toStartOf="@+id/themeText"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/responses" />
+
+            <TextView
+                android:id="@+id/installCount"
+                style="@style/BoldBlackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@+id/installCountText"
+                app:layout_constraintStart_toStartOf="@+id/installCountText"
+                app:layout_constraintTop_toTopOf="@+id/ratingNumber"
+                tools:text="13245к" />
+
+            <TextView
+                android:id="@+id/themeNumber"
+                style="@style/BoldBlackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:layout_constraintEnd_toEndOf="@+id/themeText"
+                app:layout_constraintStart_toStartOf="@+id/themeText"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="132446" />
+
+            <TextView
+                android:id="@+id/themeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:gravity="center"
+                android:text="@string/themes"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/responses"
+                app:layout_constraintEnd_toStartOf="@+id/phrasesText"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/installCountText" />
+
+            <TextView
+                android:id="@+id/phrasesCount"
+                style="@style/BoldBlackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:layout_constraintEnd_toEndOf="@+id/phrasesText"
+                app:layout_constraintStart_toStartOf="@+id/phrasesText"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="678211" />
+
+            <TextView
+                android:id="@+id/phrasesText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:gravity="center"
+                android:text="@string/phrases"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/responses"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/themeText" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/neuroBotDescription"
+            style="@style/BotShopDescriptionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_normal"
+            android:layout_marginLeft="@dimen/padding_normal"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginBottom="24dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/bot_date_added"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Искусство реально понимает под собой неоднозначный даосизм Искусство реально понимает под собой неоднозначный даосизм " />
+
+        <TextView
+            android:id="@+id/bot_date_added"
+            style="@style/BotShopDescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            app:layout_constraintBottom_toTopOf="@+id/bot_date_refreshed"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Добавлен: 01.01.2018" />
+
+        <TextView
+            android:id="@+id/bot_date_refreshed"
+            style="@style/BotShopDescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            app:layout_constraintBottom_toTopOf="@+id/bot_developer"
+            app:layout_constraintStart_toStartOf="@+id/bot_date_added"
+            tools:text="Обновлен: 01.01.2018" />
+
+        <TextView
+            android:id="@+id/bot_developer"
+            style="@style/BotShopDescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:text="@string/developer"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="@+id/bot_date_refreshed" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorSmartPanelBackground"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_normal"
+            app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                style="@style/BoldGrayText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/rate_bot" />
+
+            <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                android:id="@+id/rating"
+                style="@style/Widget.MaterialRatingBar.RatingBar.Indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="-3dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="-3dp"
+                android:numStars="5"
+                android:rating="0"
+                android:secondaryProgress="5"
+                android:stepSize="1"
+                app:mrb_progressTint="@color/colorBotRating" />
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="8dp">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/closeNeuroBotInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/close"
+                android:theme="@style/PrimaryFlatButton" />
+
+            <com.smedialink.smartpanel.view.NeuroBotInfoAddButton
+                android:id="@+id/addNeuroBot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/receive"
+                android:theme="@style/PrimaryFlatButton" />
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>

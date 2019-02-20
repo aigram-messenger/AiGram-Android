@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SmartShopButton">
+        <attr name="state_available_free" format="boolean" />
+        <attr name="state_available_paid" format="boolean" />
+        <attr name="state_installed_enabled" format="boolean" />
+        <attr name="state_installed_disabled" format="boolean" />
+    </declare-styleable>
+</resources>
