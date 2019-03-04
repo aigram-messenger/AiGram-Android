@@ -1,91 +1,126 @@
 package com.smedialink.smartpanel.mapper
 
-import com.smedialink.responses.domain.model.NeuroBotType
-import com.smedialink.responses.domain.model.SmartBotResponse
-import com.smedialink.smartpanel.provider.IconsProvider
+import com.smedialink.responses.domain.model.enums.SmartBotHolidayType
+import com.smedialink.responses.domain.model.enums.SmartBotType
+import com.smedialink.responses.domain.model.response.SmartBotResponse
+import com.smedialink.responses.provider.IconsProvider
 import com.smedialink.smartpanel.R
-import com.smedialink.smartpanel.model.TabContent
-import com.smedialink.smartpanel.model.content.AnswerItem
-import com.smedialink.smartpanel.model.content.TabContentItem
+import com.smedialink.smartpanel.model.SmartPanelTab
+import com.smedialink.smartpanel.model.TabContentItem
+import com.smedialink.smartpanel.model.content.TabBotAnswerItem
+import com.smedialink.smartpanel.model.content.TabBotNameItem
+import com.smedialink.smartpanel.model.tabs.BotAnswersTab
+import com.smedialink.smartpanel.model.tabs.BotShopTab
 
 class SmartContentMapper {
 
-    /**
-     * Контент для панельки
-     * Магазин - всегда первая вкладка
-     * Если есть рекламная - всегда вторая
-     * Дальше остальные боты
-     *
-     * Логика отображения рекламы:
-     * - в рекламной вкладке отображаются все ответы рекламного бота
-     * - остальным ботам (обычным) добавляется по одному случайному ответу из рекламного
-     */
-    fun mapToContent(responseList: List<SmartBotResponse>?): List<TabContent> {
+    fun mapToTabs(responseList: List<SmartBotResponse>?): List<SmartPanelTab> {
 
-        val result = mutableListOf<TabContent>()
+        val tabs = mutableListOf<SmartPanelTab>()
 
-        val shop = object : TabContent {
-            override val icon: Int = R.drawable.ic_bots_shop
-            override val contentType: TabContent.Type = TabContent.Type.SHOP
-            override val botType: NeuroBotType? = null
-            override val label: Int = 0
-        }
+        val shopTab = BotShopTab()
 
-        result.add(shop)
+        tabs.add(shopTab)
 
-        val adverts = mutableListOf<SmartBotResponse>()
-        val normals = mutableListOf<SmartBotResponse>()
+        val advertResponses = mutableListOf<SmartBotResponse>()
+        val normalResponses = mutableListOf<SmartBotResponse>()
 
         responseList?.forEach { response ->
             if (response.type.name.contains("TRADE_"))
-                adverts.add(response)
+                advertResponses.add(response)
             else
-                normals.add(response)
+                normalResponses.add(response)
         }
 
-        val allAdvertAnswers = mutableListOf<AnswerItem>()
+        // Все рекламные ответы на одной вкладке
+        val allAdvertAnswers = mutableListOf<TabContentItem>()
 
-        adverts.forEach { allAdvertAnswers.addAll(responseToAnswers(it, true)) }
+        advertResponses.forEach { allAdvertAnswers.addAll(responseToContentItems(it)) }
 
         if (allAdvertAnswers.isNotEmpty()) {
-            val advertsBot = TabContentItem(
-                    icon = R.drawable.ic_adverts,
-                    contentType = TabContent.Type.ADVERTISEMENT,
-                    botType = null,
-                    answers = allAdvertAnswers
+            val advertsTab = BotAnswersTab(
+                icon = R.drawable.ic_adverts,
+                type = SmartPanelTab.Type.ADVERTISEMENT,
+                botType = null,
+                answers = allAdvertAnswers
             )
 
-            result.add(advertsBot)
+            tabs.add(advertsTab)
         }
 
-        normals.forEach { normalBot ->
-            val botAnswers = mutableListOf<AnswerItem>()
-            adverts.forEach { advertBot ->
-                botAnswers.add(getRandomAdvertAnswer(advertBot))
+        // Остальные ответы, каждый на своей вкладке
+        normalResponses.forEach { response ->
+
+            val tabAnswers = mutableListOf<TabContentItem>()
+
+            // Имя бота вверху таба
+            tabAnswers.add(
+                TabBotNameItem(
+                    contentType = TabContentItem.Type.NORMAL_BOT_LABEL,
+                    nameResId = getContentTitle(response.type, response.tag)
+                ))
+
+            // Рекламный ответ, всем кроме ассистента
+            if (response.type != SmartBotType.ASSISTANT) {
+                advertResponses.forEach { advertBot -> tabAnswers.add(getRandomAdvertAnswer(advertBot)) }
             }
-            botAnswers.addAll(responseToAnswers(normalBot, false))
 
-            result.add(
-                    TabContentItem(
-                            icon = IconsProvider.circle(normalBot.type),
-                            contentType = TabContent.Type.NORMAL_BOT,
-                            botType = normalBot.type,
-                            label = normalBot.type.title,
-                            answers = botAnswers
-                    )
+            // Остальные ответы
+            tabAnswers.addAll(responseToContentItems(response))
+
+            tabs.add(
+                BotAnswersTab(
+                    icon = getTabAvatar(response.type, response.tag),
+                    type = SmartPanelTab.Type.BOT,
+                    botType = response.type,
+                    answers = tabAnswers
+                )
             )
         }
 
-        return result
+        return tabs
     }
 
-    private fun getRandomAdvertAnswer(response: SmartBotResponse): AnswerItem =
-            AnswerItem(
-                    phrase = response.phrases.random(),
-                    link = response.link,
-                    isAdvertising = true
-            )
+    private fun getRandomAdvertAnswer(response: SmartBotResponse): TabContentItem =
+        TabBotAnswerItem(
+            contentType = TabContentItem.Type.ADVERT_BOT_ANSWER,
+            botType = response.type,
+            phrase = response.phrases.random(),
+            tag = response.tag,
+            link = response.link
+        )
 
-    private fun responseToAnswers(response: SmartBotResponse, isAdvert: Boolean): List<AnswerItem> =
-            response.phrases.map { phrase -> AnswerItem(phrase, response.link, isAdvert) }
+    private fun responseToContentItems(response: SmartBotResponse): List<TabContentItem> =
+        response.phrases.map { text ->
+            TabBotAnswerItem(
+                contentType =
+                if (isAdvert(response.type))
+                    TabContentItem.Type.ADVERT_BOT_ANSWER
+                else
+                    TabContentItem.Type.NORMAL_BOT_ANSWER,
+                botType = response.type,
+                phrase = text,
+                tag = response.tag,
+                link = response.link
+            )
+        }
+
+    private fun isAdvert(type: SmartBotType): Boolean =
+        type.name.contains("TRADE_")
+
+    private fun getContentTitle(type: SmartBotType, tag: String): Int {
+        return if (type != SmartBotType.HOLIDAYS) {
+            type.title
+        } else {
+            SmartBotHolidayType.labelByTag(tag)
+        }
+    }
+
+    private fun getTabAvatar(type: SmartBotType, tag: String): Int {
+        return if (type != SmartBotType.HOLIDAYS) {
+            IconsProvider.circle(type)
+        } else {
+            IconsProvider.circleHoliday(tag)
+        }
+    }
 }

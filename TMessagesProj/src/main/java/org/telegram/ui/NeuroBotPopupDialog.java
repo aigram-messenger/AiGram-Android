@@ -9,9 +9,10 @@ import android.view.WindowManager;
 
 import com.smedialink.aigram.purchases.domain.GetShopItemsUseCase;
 import com.smedialink.aigram.purchases.domain.ManageShopItemUseCase;
-import com.smedialink.aigram.purchases.domain.model.ShopItem;
 import com.smedialink.aigram.purchases.domain.repository.ShopRepository;
-import com.smedialink.responses.domain.model.NeuroBotType;
+import com.smedialink.responses.domain.model.enums.SmartBotType;
+import com.smedialink.smartpanel.model.TabContentItem;
+import com.smedialink.smartpanel.model.content.TabShopItem;
 import com.smedialink.smartpanel.view.NeuroBotPopupView;
 
 import org.telegram.messenger.R;
@@ -28,14 +29,14 @@ public class NeuroBotPopupDialog extends Dialog implements NeuroBotPopupView.Neu
     private GetShopItemsUseCase getShopItemsUseCase;
 
     private NeuroBotPopupView neuroBotPopupView;
-    private ShopItem currentShopItem;
+    private TabShopItem currentShopItem;
 
-    private NeuroBotType currentBotType;
+    private SmartBotType currentBotType;
 
     private Listener listener;
 
     public interface Listener {
-        void onInfoClick(ShopItem shopItem);
+        void onInfoClick(TabShopItem shopItem);
 
         void onShareClick();
 
@@ -68,11 +69,12 @@ public class NeuroBotPopupDialog extends Dialog implements NeuroBotPopupView.Neu
         getWindow().setAttributes(params);
     }
 
-    public void setCurrentBot(NeuroBotType botType) {
+    public void setCurrentBot(SmartBotType botType) {
         currentBotType = botType;
 
         compositeDisposable.clear();
         compositeDisposable.add(getShopItemsUseCase.getByType(currentBotType)
+                .map(item -> new TabShopItem(TabContentItem.Type.SHOP_ITEM, item))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(shopItem -> currentShopItem = shopItem, Throwable::printStackTrace));
@@ -105,7 +107,7 @@ public class NeuroBotPopupDialog extends Dialog implements NeuroBotPopupView.Neu
     @Override
     public void onDisableClick() {
         if (currentShopItem != null) {
-            manageShopItemUseCase.manage(currentShopItem, true);
+            manageShopItemUseCase.manage(currentShopItem.getItem(), true);
         }
         if (currentBotType != null) {
             listener.onDisableClick();

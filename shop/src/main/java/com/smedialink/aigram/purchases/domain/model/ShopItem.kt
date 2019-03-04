@@ -1,10 +1,10 @@
 package com.smedialink.aigram.purchases.domain.model
 
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 
 // Класс, определяющий отдельный пункт на странице магазина
 data class ShopItem(
-    val smartBotType: NeuroBotType,
+    val smartBotType: SmartBotType,
     val avatar: Int,
     val installs: Long,
     val reviews: Long,

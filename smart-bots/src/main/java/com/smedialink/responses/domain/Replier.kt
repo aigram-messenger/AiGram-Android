@@ -1,6 +1,6 @@
 package com.smedialink.responses.domain
 
-import com.smedialink.responses.domain.model.SmartBotResponse
+import com.smedialink.responses.domain.model.response.SmartBotResponse
 import org.jetbrains.annotations.NotNull
 
 interface Replier {
@@ -28,7 +28,7 @@ interface Replier {
      * @param lemmas Исходное предложение в виде списка лемматизированных слов
      * @param callback Коллбек для получения результатов
      */
-    fun getAvailableResponses(sentence: String, callback: Callback)
+    fun getAvailableResponses(sentence: String, userId: Int, callback: Callback)
 
     /**
      * Метод для отмены всех запущенных внутри ботов корутин

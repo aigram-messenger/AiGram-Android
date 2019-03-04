@@ -9,17 +9,21 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.smedialink.aigram.purchases.domain.model.ShopItem
+import com.smedialink.responses.data.repository.AnswersStorageRepository
 import com.smedialink.responses.data.repository.SmartBotRepository
-import com.smedialink.responses.domain.model.NeuroBotType
-import com.smedialink.responses.domain.model.SmartBotResponse
+import com.smedialink.responses.domain.model.enums.SmartBotContentType
+import com.smedialink.responses.domain.model.enums.SmartBotType
+import com.smedialink.responses.domain.model.response.SmartBotResponse
 import com.smedialink.responses.event.SmartBotEventBus
 import com.smedialink.smartpanel.extension.floatToDp
 import com.smedialink.smartpanel.mapper.SmartContentMapper
-import com.smedialink.smartpanel.model.TabContent
-import com.smedialink.smartpanel.model.content.TabContentItem
+import com.smedialink.smartpanel.model.SmartPanelTab
+import com.smedialink.smartpanel.model.content.TabBotAnswerItem
+import com.smedialink.smartpanel.model.content.TabShopItem
+import com.smedialink.smartpanel.model.tabs.BotAnswersTab
 import com.smedialink.smartpanel.view.SmartBotContentView
 import com.smedialink.smartpanel.view.SmartBotShopView
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -34,25 +38,27 @@ class SmartPanelView(
 ) : FrameLayout(context), ViewPager.OnPageChangeListener {
 
     interface Listener {
-        fun onAnswerSelected(@NotNull phrase: String, @NotNull link: String, position: Int)
+        fun onAnswerSelected(@NotNull answer: TabBotAnswerItem, position: Int)
         fun onSmartPanelTab(isExpandable: Boolean)
         fun onBotsRefreshed()
-        fun onBotInstalled(type: NeuroBotType)
+        fun onBotInstalled(type: SmartBotType)
     }
 
     interface ShowBotInfoClickListener {
-        fun onShowBotInfoClick(shopItem: ShopItem)
+        fun onShowBotInfoClick(shopItem: TabShopItem)
     }
 
     interface ShowBotPopupClickListener {
-        fun onShowBotPopupClick(botType: NeuroBotType)
+        fun onShowBotPopupClick(botType: SmartBotType)
     }
 
+    private var content: MutableList<SmartPanelTab> = mutableListOf()
+
     private val mapper: SmartContentMapper = SmartContentMapper()
-    private var content: MutableList<TabContent> = mutableListOf()
     private val disposables: CompositeDisposable = CompositeDisposable()
     private val botEvents = SmartBotEventBus.get()
-    private val repository = SmartBotRepository.getInstance(context)
+    private val botsRepository = SmartBotRepository.getInstance(context)
+    private val answersRepository = AnswersStorageRepository.getInstance(context)
     private var listener: SmartPanelView.Listener? = null
     private var shopView: SmartBotShopView? = null
     private var panelHeight: Int = 0
@@ -92,7 +98,7 @@ class SmartPanelView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        repository.cacheNewBotsIfAvailable()
+        botsRepository.cacheNewBotsIfAvailable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(::listenForEvents, Throwable::printStackTrace)
@@ -119,7 +125,7 @@ class SmartPanelView(
 
     fun setData(list: List<SmartBotResponse>?) {
         content.clear()
-        content.addAll(mapper.mapToContent(list))
+        content.addAll(mapper.mapToTabs(list))
 
         viewpager.adapter = pagerAdapter
         pagerAdapter.notifyDataSetChanged()
@@ -141,11 +147,27 @@ class SmartPanelView(
                 is SmartBotEventBus.Event.BotInstalled -> {
                     listener?.onBotInstalled(event.type)
                 }
+                is SmartBotEventBus.Event.BotAnswerChosen -> {
+                    handleChosenAnswer(event)
+                    SmartBotEventBus.flush()
+                }
             }
         }, { e: Throwable ->
             e.printStackTrace()
         })
             .also { disposables.add(it) }
+    }
+
+    private fun handleChosenAnswer(event: SmartBotEventBus.Event.BotAnswerChosen) {
+        Completable.fromAction {
+            if (event.botType == SmartBotType.HOLIDAYS) {
+                answersRepository.saveHolidayGreeting(event.userId, event.tag)
+            }
+            answersRepository.saveResponseCounter(event.botType, event.tag, event.position)
+        }
+        .subscribeOn(Schedulers.io())
+        .subscribe({}, { e -> e.printStackTrace() })
+        .also { disposables.add(it) }
     }
 
     private fun updateIcons() {
@@ -162,7 +184,9 @@ class SmartPanelView(
                 tabStrip.getChildAt(i).setOnLongClickListener { v ->
                     val position = tabStrip.indexOfChild(v)
                     val item = content[position]
-                    if (item is TabContentItem) {
+                    if (item is BotAnswersTab &&
+                        (item.botType?.contentType == SmartBotContentType.NEURO ||
+                            item.botType?.contentType == SmartBotContentType.NORMAL)) {
                         item.botType?.let { showBotPopupClickListener.onShowBotPopupClick(it) }
                         true
                     } else {
@@ -216,7 +240,7 @@ class SmartPanelView(
      */
     private fun moveToInitialPosition() {
         val advertIndex =
-            content.indexOfFirst { it.contentType == TabContent.Type.ADVERTISEMENT }
+            content.indexOfFirst { it.type == SmartPanelTab.Type.ADVERTISEMENT }
 
         if (!shouldUpdatePages) {
             shouldUpdatePages = true
@@ -252,7 +276,7 @@ class SmartPanelView(
      * пока к таким относится только вкладка магазина ботов
      */
     private fun isCurrentTabExpandable(position: Int): Boolean =
-        content[position].contentType == TabContent.Type.SHOP
+        content[position].type == SmartPanelTab.Type.SHOP
 
     private val pagerAdapter = object : PagerAdapter() {
 
@@ -265,8 +289,8 @@ class SmartPanelView(
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             val contentItem = content[position]
             val view: ViewGroup
-                when (contentItem.contentType) {
-                    TabContent.Type.SHOP -> {
+            when (contentItem.type) {
+                SmartPanelTab.Type.SHOP -> {
                         view = SmartBotShopView(container.context, showBotInfoClickListener::onShowBotInfoClick)
                         shopView = view
                     }
@@ -284,5 +308,4 @@ class SmartPanelView(
             container.removeView(obj as View)
         }
     }
-
 }

@@ -7,11 +7,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import com.smedialink.aigram.purchases.domain.model.ShopItem
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
+import com.smedialink.responses.provider.IconsProvider
 import com.smedialink.smartpanel.R
 import com.smedialink.smartpanel.extension.pxToDp
-import com.smedialink.smartpanel.model.content.BotInfoModel
-import com.smedialink.smartpanel.provider.IconsProvider
+import com.smedialink.smartpanel.model.info.BotInfoModel
 import kotlinx.android.synthetic.main.bots_description_content.view.*
 
 
@@ -24,7 +24,7 @@ class NeuroBotInfoView(context: Context, private val delegate: NeuroBotInfoViewD
     interface NeuroBotInfoViewDelegate {
         fun onCloseClick()
         fun onEnableClick()
-        fun onRatingChosen(type: NeuroBotType, rating: Int)
+        fun onRatingChosen(type: SmartBotType, rating: Int)
     }
 
     var shopItem: ShopItem? = null
@@ -53,6 +53,7 @@ class NeuroBotInfoView(context: Context, private val delegate: NeuroBotInfoViewD
         neuroBotDescription.text = botInfoModel.botInfoDescription
         bot_date_added.text = context.getString(R.string.neuro_bot_info_date_adedd_placeholder, botInfoModel.dateAdded)
         bot_date_refreshed.text = context.getString(R.string.neuro_bot_info_date_updated_placeholder, botInfoModel.dateRefreshed)
+        bot_type.setText(botInfoModel.type.contentType.label)
         neuroBotAvatar.setImageResource(botInfoModel.avatar)
         addNeuroBot.state = botInfoModel.state
 
@@ -85,19 +86,19 @@ class NeuroBotInfoView(context: Context, private val delegate: NeuroBotInfoViewD
     private fun mapToBotInfo(shopItem: ShopItem): BotInfoModel {
         val neuroBotType = shopItem.smartBotType
         return BotInfoModel(
-                botName = context.getString(neuroBotType.title),
-                botInfoDescription = context.getString(neuroBotType.description),
-                avatar = IconsProvider.rounded(neuroBotType),
-                reviews = shopItem.reviews,
-                themes = shopItem.themes,
-                phrases = shopItem.phrases,
-                ownRating = shopItem.ownRating,
-                dateAdded = neuroBotType.dateAdded,
-                dateRefreshed = neuroBotType.dateUpdated,
-                state = shopItem.state,
-                averageRating = shopItem.averageRating,
-                type = neuroBotType,
-                installs = shopItem.installs
+            botName = context.getString(neuroBotType.title),
+            botInfoDescription = context.getString(neuroBotType.description),
+            avatar = IconsProvider.rounded(neuroBotType),
+            reviews = shopItem.reviews,
+            themes = shopItem.themes,
+            phrases = shopItem.phrases,
+            ownRating = shopItem.ownRating,
+            dateAdded = neuroBotType.dateAdded,
+            dateRefreshed = neuroBotType.dateUpdated,
+            state = shopItem.state,
+            averageRating = shopItem.averageRating,
+            type = neuroBotType,
+            installs = shopItem.installs
 
         )
     }

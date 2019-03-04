@@ -4,7 +4,7 @@ import android.content.Context
 import com.smedialink.responses.data.database.BotDao
 import com.smedialink.responses.data.database.BotsDatabase
 import com.smedialink.responses.data.database.ShopDbModel
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import com.smedialink.responses.event.SmartBotEventBus
 import com.smedialink.responses.event.SmartBotEventBus.Event
 import io.reactivex.Completable
@@ -29,7 +29,7 @@ class ShopRepository(context: Context) {
         SmartBotEventBus.get()
     }
 
-    fun getByType(smartBotType: NeuroBotType): Flowable<ShopDbModel> {
+    fun getByType(smartBotType: SmartBotType): Flowable<ShopDbModel> {
         return botsDao.getBySmartBotType(smartBotType)
     }
 
@@ -37,7 +37,7 @@ class ShopRepository(context: Context) {
         return botsDao.streamAll()
     }
 
-    fun markEnabled(smartBotType: NeuroBotType, refreshPanel: Boolean): Completable {
+    fun markEnabled(smartBotType: SmartBotType, refreshPanel: Boolean): Completable {
         return botsDao.getBySmartBotType(smartBotType)
             .firstOrError()
             .doOnSuccess {
@@ -47,7 +47,7 @@ class ShopRepository(context: Context) {
             .toCompletable()
     }
 
-    fun markInstalled(smartBotType: NeuroBotType, refreshPanel: Boolean): Completable {
+    fun markInstalled(smartBotType: SmartBotType, refreshPanel: Boolean): Completable {
         return botsDao.getBySmartBotType(smartBotType)
             .firstOrError()
             .doOnSuccess {

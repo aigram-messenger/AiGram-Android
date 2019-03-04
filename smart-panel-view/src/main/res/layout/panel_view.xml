@@ -5,6 +5,7 @@
     android:id="@+id/smart_panel_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorSmartPanelBackground"
     android:orientation="vertical">
 
     <android.support.design.widget.TabLayout

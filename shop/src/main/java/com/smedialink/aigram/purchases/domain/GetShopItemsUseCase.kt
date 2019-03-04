@@ -5,8 +5,8 @@ import com.smedialink.aigram.purchases.domain.model.ShopItem
 import com.smedialink.aigram.purchases.domain.repository.ShopRepository
 import com.smedialink.aigram.purchases.mapper.ShopItemMapper
 import com.smedialink.responses.data.database.ShopDbModel
-import com.smedialink.responses.domain.model.ContentType
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotContentType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import com.smedialink.responses.event.SmartBotEventBus
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -36,7 +36,7 @@ class GetShopItemsUseCase(private val shopRepository: ShopRepository) {
                             } else {
                                 //убираем рекламы
                                 items.filterNot {
-                                    it.smartBotType.contentType == ContentType.ADVERTS
+                                    it.smartBotType.contentType == SmartBotContentType.ADVERTS
                                 }
                             }.map { shopDbModel ->
                                 map(shopDbModel, shopDbModel.smartBotType)
@@ -49,7 +49,7 @@ class GetShopItemsUseCase(private val shopRepository: ShopRepository) {
         return publisher
     }
 
-    fun getByType(neuroBotType: NeuroBotType): Flowable<ShopItem> {
+    fun getByType(neuroBotType: SmartBotType): Flowable<ShopItem> {
         return shopRepository.getByType(neuroBotType)
                 .map { shopDbModel -> map(shopDbModel, neuroBotType) }
     }
@@ -58,12 +58,12 @@ class GetShopItemsUseCase(private val shopRepository: ShopRepository) {
         disposables.dispose()
     }
 
-    private fun map(shopDbModel: ShopDbModel, neuroBotType: NeuroBotType): ShopItem {
+    private fun map(shopDbModel: ShopDbModel, neuroBotType: SmartBotType): ShopItem {
         return ShopItemMapper.map(shopDbModel, findProduct(purchaseHelper.products, neuroBotType))
     }
 
     private fun findProduct(products: Set<PurchaseHelper.Product>,
-                            smartBotType: NeuroBotType): PurchaseHelper.Product? {
+                            smartBotType: SmartBotType): PurchaseHelper.Product? {
         return products.find { it.sku == smartBotType.skuId }
     }
 }

@@ -1332,6 +1332,7 @@
     <string name="NotificationsForChannels">Notifications for channels</string>
     <string name="TapToChange">Tap to change</string>
     <string name="AutoBots">Automatic bots</string>
+    <string name="UseProxySettingsInfo">If there is no connection then try using a proxy.</string>
     <!--cache view-->
     <string name="LocalDatabase">Local Database</string>
     <string name="LocalDatabaseClear">Clear cached text messages?</string>

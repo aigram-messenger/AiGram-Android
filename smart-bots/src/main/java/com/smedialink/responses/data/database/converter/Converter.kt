@@ -2,7 +2,7 @@ package com.smedialink.responses.data.database.converter
 
 import android.arch.persistence.room.TypeConverter
 import com.smedialink.responses.data.database.ShopDbModel
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 
 class Converter {
 
@@ -16,14 +16,14 @@ class Converter {
 
         @TypeConverter
         @JvmStatic
-        fun toString(type: NeuroBotType): String {
+        fun toString(type: SmartBotType): String {
             return type.name
         }
 
         @TypeConverter
         @JvmStatic
-        fun toSmartBotType(name: String): NeuroBotType {
-            return NeuroBotType.resolve(name)
+        fun toSmartBotType(name: String): SmartBotType {
+            return SmartBotType.resolve(name)
                     ?: throw IllegalArgumentException("Could not recognize status")
         }
 
@@ -33,5 +33,4 @@ class Converter {
             return type.name
         }
     }
-
 }

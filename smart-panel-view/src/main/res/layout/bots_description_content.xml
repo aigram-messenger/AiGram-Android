@@ -46,7 +46,7 @@
                 style="@style/BotShopDescriptionText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/bot_label"
+                tools:text="NeuroBot"
                 app:layout_constraintBottom_toTopOf="@+id/tags_container"
                 app:layout_constraintStart_toStartOf="@+id/neuroBotName"
                 app:layout_constraintTop_toBottomOf="@+id/neuroBotName" />

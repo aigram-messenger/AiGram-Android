@@ -8,10 +8,11 @@ import android.view.View
 import android.widget.FrameLayout
 import com.smedialink.aigram.purchases.domain.GetShopItemsUseCase
 import com.smedialink.aigram.purchases.domain.ManageShopItemUseCase
-import com.smedialink.aigram.purchases.domain.model.ShopItem
 import com.smedialink.aigram.purchases.domain.repository.ShopRepository
 import com.smedialink.smartpanel.R
 import com.smedialink.smartpanel.adapter.SmartBotShopAdapter
+import com.smedialink.smartpanel.model.TabContentItem
+import com.smedialink.smartpanel.model.content.TabShopItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.bots_shop_page.view.*
 @SuppressLint("ViewConstructor")
 class SmartBotShopView(
     context: Context,
-    private val onNeuroBotClickListener: (ShopItem) -> Unit
+    private val onNeuroBotClickListener: (TabShopItem) -> Unit
 ) : FrameLayout(context) {
 
     private var adapter: SmartBotShopAdapter = SmartBotShopAdapter().apply { setHasStableIds(true) }
@@ -44,6 +45,7 @@ class SmartBotShopView(
         }
 
         getShopItemsUseCase.getAll()
+            .map { list -> list.map { TabShopItem(TabContentItem.Type.SHOP_ITEM, it) } }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { applyState(State.LOADING) }
@@ -56,7 +58,7 @@ class SmartBotShopView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        adapter.onEnablButtonClickListener = { manageShopItemUseCase.manage(it, false) }
+        adapter.onEnableButtonClickListener = { manageShopItemUseCase.manage(it.item, false) }
         adapter.onNeuroBotClickListener = onNeuroBotClickListener
     }
 

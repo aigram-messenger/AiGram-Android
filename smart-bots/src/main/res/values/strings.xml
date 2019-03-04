@@ -25,6 +25,20 @@
     <string name="bot_title_tyrion">Тирион Ланнистер</string>
     <string name="bot_title_assistant">Ассистент</string>
     <string name="bot_title_deadpool">Дэдпул</string>
+    <string name="bot_title_pushkin">Пушкин</string>
+    <string name="bot_title_lenin">Ленин</string>
+    <string name="bot_title_minions">Миньоны</string>
+    <string name="bot_title_lotr">Властелин Колец</string>
+    <string name="bot_title_simpsons">Симпсоны</string>
+    <string name="bot_title_south_park">Южный Парк</string>
+
+    <string name="bot_title_recent">Часто используемые</string>
+
+    <string name="bot_title_holidays">Праздники</string>
+    <string name="bot_title_holiday_23rd_feb">День защитника Отечества</string>
+    <string name="bot_title_holiday_8th_mar">Международный женский день</string>
+    <string name="bot_title_holiday_1st_apr">День смеха</string>
+    <string name="bot_title_holiday_12th_apr">День космонавтики</string>
 
     <string name="bot_description_trade_binbank">Описание</string>
     <string name="bot_description_chanel">Французский модельер, основавшая модный дом «Chanel».</string>
@@ -51,6 +65,14 @@
     <string name="bot_description_tyrion">Остроумный и красноречивый карлик из сериала «Игра престолов».</string>
     <string name="bot_description_assistant">Личный помощник для общения на популярные темы.</string>
     <string name="bot_description_deadpool">Антигерой комиксов Marvel, обладает нестандартным, циничным чувством юмора.</string>
+    <string name="bot_description_pushkin">Русский поэт, драматург и прозаик.</string>
+    <string name="bot_description_lenin">Российский революционер, политический и государственный деятель.</string>
+    <string name="bot_description_minions">Маленькие приспешники всех злодеев.</string>
+    <string name="bot_description_lotr">Роман-эпопея английского писателя Дж.Р.Р.Толкина.</string>
+    <string name="bot_description_simpsons">Сатирический мультсериал про жизнь семейства Симпсонов.</string>
+    <string name="bot_description_south_park">Мультсериал о приключениях четырёх мальчиков.</string>
+
+    <string name="bot_description_holidays">Праздники России. Бот активируется в даты праздников.</string>
 
     <string name="bot_tag_free">Бесплатные</string>
     <string name="bot_tag_paid">Платные</string>
@@ -61,4 +83,9 @@
     <string name="bot_tag_hero_movie">Киногерои</string>
     <string name="bot_tag_hero_cartoon">Мультгерои</string>
     <string name="bot_tag_pack">Сборники</string>
+
+    <string name="bot_label_neuro">NeuroBot</string>
+    <string name="bot_label_normal">Bot</string>
+    <string name="bot_label_advert">Adverts Bot</string>
+    <string name="bot_label_most_used">Favorites</string>
 </resources>

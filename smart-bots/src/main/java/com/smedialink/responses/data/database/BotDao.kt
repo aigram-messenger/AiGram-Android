@@ -5,7 +5,7 @@ import com.smedialink.responses.data.network.BotRemoteInfo
 import com.smedialink.responses.data.network.BotVoteInfo
 import com.smedialink.responses.data.network.Response
 import com.smedialink.responses.data.network.SmartBotsApi
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -60,17 +60,17 @@ abstract class BotDao {
     @Delete
     abstract fun delete(entities: List<ShopDbModel>)
 
-    @Query("SELECT * FROM ShopDbModel ")
+    @Query("SELECT * FROM ShopDbModel")
     abstract fun streamAll(): Flowable<List<ShopDbModel>>
 
     @Query("SELECT * FROM ShopDbModel WHERE id LIKE :id")
     abstract fun getById(id: Long): Single<ShopDbModel>
 
     @Query("SELECT * FROM ShopDbModel WHERE smartBotType LIKE :smartBotType")
-    abstract fun getByType(smartBotType: NeuroBotType): ShopDbModel
+    abstract fun getByType(smartBotType: SmartBotType): ShopDbModel
 
     @Query("SELECT * FROM ShopDbModel WHERE smartBotType LIKE :smartBotType")
-    abstract fun getBySmartBotType(smartBotType: NeuroBotType): Flowable<ShopDbModel>
+    abstract fun getBySmartBotType(smartBotType: SmartBotType): Flowable<ShopDbModel>
 
     @Query("SELECT * FROM ShopDbModel WHERE type LIKE :installType")
     abstract fun getByInstallType(installType: ShopDbModel.Type): List<ShopDbModel>
@@ -79,37 +79,37 @@ abstract class BotDao {
     abstract fun getAll(): List<ShopDbModel>
 
     @Query("UPDATE ShopDbModel SET installs = :value WHERE smartBotType = :smartBotType")
-    abstract fun saveInstalls(smartBotType: NeuroBotType, value: Long): Long
+    abstract fun saveInstalls(smartBotType: SmartBotType, value: Long): Long
 
     @Query("UPDATE ShopDbModel SET ratings = :value WHERE smartBotType = :smartBotType")
-    abstract fun saveRatings(smartBotType: NeuroBotType, value: Long): Long
+    abstract fun saveRatings(smartBotType: SmartBotType, value: Long): Long
 
     @Query("UPDATE ShopDbModel SET averageRating = :value WHERE smartBotType = :smartBotType")
-    abstract fun saveAverage(smartBotType: NeuroBotType, value: Float): Long
+    abstract fun saveAverage(smartBotType: SmartBotType, value: Float): Long
 
     @Query("UPDATE ShopDbModel SET phrases = :value WHERE smartBotType = :smartBotType")
-    abstract fun savePhrases(smartBotType: NeuroBotType, value: Long): Long
+    abstract fun savePhrases(smartBotType: SmartBotType, value: Long): Long
 
     @Query("UPDATE ShopDbModel SET themes = :value WHERE smartBotType = :smartBotType")
-    abstract fun saveThemes(smartBotType: NeuroBotType, value: Long): Long
+    abstract fun saveThemes(smartBotType: SmartBotType, value: Long): Long
 
     @Query("UPDATE ShopDbModel SET ownRating = :value WHERE smartBotType = :smartBotType")
-    abstract fun saveOwnRating(smartBotType: NeuroBotType, value: Int): Long
+    abstract fun saveOwnRating(smartBotType: SmartBotType, value: Int): Long
 
     @Query("SELECT ownRating FROM ShopDbModel WHERE type LIKE :smartBotType")
-    abstract fun getOwnRating(smartBotType: NeuroBotType): Int
+    abstract fun getOwnRating(smartBotType: SmartBotType): Int
 
     @Query("UPDATE ShopDbModel SET installEventLogged = 1 WHERE smartBotType = :smartBotType")
-    abstract fun saveInstallEvent(smartBotType: NeuroBotType): Long
+    abstract fun saveInstallEvent(smartBotType: SmartBotType): Long
 
     @Query("SELECT installEventLogged FROM ShopDbModel WHERE type LIKE :smartBotType")
-    abstract fun getInstallEvent(smartBotType: NeuroBotType): Int
+    abstract fun getInstallEvent(smartBotType: SmartBotType): Int
 
     @Transaction
     open fun saveStatistics(response: Response<List<BotRemoteInfo>>) {
         if (response.status.toLowerCase() == SmartBotsApi.STATUS_OK) {
             response.payload.forEach { bot ->
-                NeuroBotType.resolveFromLabel(bot.name)?.let { type ->
+                SmartBotType.resolveFromLabel(bot.name)?.let { type ->
                     saveInstalls(type, bot.installs.toLong())
                     saveRatings(type, bot.votings.toLong())
                     saveAverage(type, bot.rating.toFloat())
@@ -124,7 +124,7 @@ abstract class BotDao {
     open fun saveRatings(response: Response<List<BotVoteInfo>>) {
         if (response.status.toLowerCase() == SmartBotsApi.STATUS_OK) {
             response.payload.forEach { bot ->
-                NeuroBotType.resolveFromLabel(bot.name)?.let { type ->
+                SmartBotType.resolveFromLabel(bot.name)?.let { type ->
                     saveOwnRating(type, bot.rating.toInt())
                 }
             }

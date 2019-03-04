@@ -1,7 +1,7 @@
 package com.smedialink.responses.domain.factory
 
-import com.smedialink.responses.domain.model.SmartBotResponse
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.response.SmartBotResponse
+import com.smedialink.responses.domain.model.enums.SmartBotType
 
 interface ResourceFactory {
 
@@ -12,7 +12,7 @@ interface ResourceFactory {
      *
      * @return Мапа слов, где ключ это позиция слова, а значение это само слово
      */
-    fun getWordsBag(type: NeuroBotType): Map<Int, String>
+    fun getWordsBag(type: SmartBotType): Map<Int, String>
 
     /**
      * Получение списка ответов, известных данному боту
@@ -21,7 +21,7 @@ interface ResourceFactory {
      *
      * @return Список ответов
      */
-    fun getResponsesList(type: NeuroBotType): List<SmartBotResponse>
+    fun getResponsesList(type: SmartBotType): List<SmartBotResponse>
 
     /**
      * Получение псевдонима ML модели, требуется для инициализации конкретного бота в MlKit
@@ -30,7 +30,7 @@ interface ResourceFactory {
      *
      * @return Псевдоним модели
      */
-    fun getMlModelAlias(type: NeuroBotType): String
+    fun getMlModelAlias(type: SmartBotType): String
 
     /**
      * Получение пути к файлу ML модели, требуется для инициализации конкретного бота в MlKit
@@ -39,5 +39,5 @@ interface ResourceFactory {
      *
      * @return Путь к файлу ML модели в папке assets
      */
-    fun getMlModelPath(type: NeuroBotType): String
+    fun getMlModelPath(type: SmartBotType): String
 }

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import com.smedialink.aigram.purchases.configuration.BillingProvider
 import com.smedialink.responses.data.repository.SmartBotRepository
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import com.smedialink.responses.event.SmartBotEventBus
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -31,6 +31,7 @@ class PurchaseHelper private constructor() {
         get() = cachedPurchases
 
     private var isPurchaseFlowActive = false
+    private var isPurchaseHelperActive = false
 
     companion object {
         fun get(): PurchaseHelper {
@@ -52,10 +53,11 @@ class PurchaseHelper private constructor() {
 
     fun start() {
         uiCheckout?.start()
+        isPurchaseHelperActive = true
     }
 
     fun fetchSkuDetails() {
-        loadSkuDetails(NeuroBotType.skus())
+        loadSkuDetails(SmartBotType.skus())
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -94,6 +96,10 @@ class PurchaseHelper private constructor() {
 
     private fun loadSkuDetails(skus: List<String>, productType: String = ProductTypes.IN_APP) {
 
+        if (!isPurchaseHelperActive) {
+            return
+        }
+
         val request = Inventory.Request.create()
         request.loadAllPurchases()
         request.loadSkus(productType, skus)
@@ -117,6 +123,7 @@ class PurchaseHelper private constructor() {
     fun stop() {
         uiCheckout?.stop()
         disposable.clear()
+        isPurchaseHelperActive = false
         repo = null
     }
 
@@ -130,7 +137,7 @@ class PurchaseHelper private constructor() {
         val purchased = cachedPurchases
                 .toList()
                 .filter { it.isPurchased }
-                .mapNotNull { NeuroBotType.resolveFromSku(it.sku) }
+                .mapNotNull { SmartBotType.resolveFromSku(it.sku) }
 
         eventBus.onNext(SmartBotEventBus.Event.BotsPurchasesList(purchased))
 

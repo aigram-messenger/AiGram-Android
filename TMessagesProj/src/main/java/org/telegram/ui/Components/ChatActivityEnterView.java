@@ -59,10 +59,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.smedialink.aigram.purchases.domain.model.ShopItem;
-import com.smedialink.responses.domain.model.NeuroBotType;
-import com.smedialink.responses.domain.model.SmartBotResponse;
+import com.smedialink.responses.domain.model.response.SmartBotResponse;
+import com.smedialink.responses.domain.model.enums.SmartBotType;
+import com.smedialink.responses.event.SmartBotEventBus;
 import com.smedialink.smartpanel.SmartPanelView;
+import com.smedialink.smartpanel.model.content.TabBotAnswerItem;
+import com.smedialink.smartpanel.model.content.TabShopItem;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -97,6 +99,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import io.reactivex.subjects.BehaviorSubject;
 
 public class ChatActivityEnterView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate, SizeNotifierFrameLayout.SizeNotifierFrameLayoutDelegate, StickersAlert.StickersAlertDelegate {
 
@@ -143,13 +147,13 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
         // Имплементация аналогична такому же методу выше
         void onSmartPanelExpandedChange();
 
-        void showBotInfo(ShopItem shopItem);
+        void showBotInfo(TabShopItem shopItem);
 
-        void showBotPopup(NeuroBotType botType);
+        void showBotPopup(SmartBotType botType);
 
         void invokeBotsRefreshing();
 
-        void logBotInstall(NeuroBotType type);
+        void logBotInstall(SmartBotType type);
     }
 
     private int currentAccount = UserConfig.selectedAccount;
@@ -271,6 +275,8 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
     private boolean isSmartPanelExpandableTabOpened = false;
     // Состояние кнопки видимости панели ботов
     private boolean isSmartPanelButtonVisible = true;
+    // Ивенты ботов
+    private BehaviorSubject<SmartBotEventBus.Event> botsEventBus = SmartBotEventBus.Companion.get();
 
     private MessageObject editingMessageObject;
     private int editingMessageReqId;
@@ -3512,19 +3518,35 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
         smartPanelView.setVisibility(GONE);
         smartPanelView.setListener(new SmartPanelView.Listener() {
             @Override
-            public void onAnswerSelected(@NonNull String phrase, @NonNull String link, int position) {
-                if (!phrase.isEmpty()) {
-                    messageEditText.setText(phrase);
+            public void onAnswerSelected(@NonNull TabBotAnswerItem answer, int position) {
+                if (!answer.getPhrase().isEmpty()) {
+                    messageEditText.setText(answer.getPhrase());
                     messageEditText.setSelection(messageEditText.getText().length());
                     checkSendButton(true);
                 }
-                if (!link.isEmpty()) {
-                    currentBotLink = link;
+                if (!answer.getLink().isEmpty()) {
+                    currentBotLink = answer.getLink();
                 } else {
                     currentBotLink = "";
                 }
                 messageEditText.append(" ");
                 messageEditText.clearFocus();
+
+                TLRPC.User currentUser = null;
+                int currentId = 0;
+                if ((int) dialog_id > 0) {
+                    currentUser = MessagesController.getInstance(currentAccount).getUser((int) dialog_id);
+                }
+                if (currentUser != null) {
+                    currentId = currentUser.id;
+                }
+
+                botsEventBus.onNext(new SmartBotEventBus.Event.BotAnswerChosen(
+                        answer.getBotType(),
+                        answer.getTag(),
+                        position - 1,
+                        currentId
+                ));
             }
 
             @Override
@@ -3539,7 +3561,7 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
             }
 
             @Override
-            public void onBotInstalled(NeuroBotType type) {
+            public void onBotInstalled(SmartBotType type) {
                 delegate.logBotInstall(type);
             }
         });

@@ -8,8 +8,7 @@ import android.widget.FrameLayout
 import com.smedialink.smartpanel.R
 import com.smedialink.smartpanel.SmartPanelView
 import com.smedialink.smartpanel.adapter.SmartBotContentAdapter
-import com.smedialink.smartpanel.model.TabContent
-import com.smedialink.smartpanel.model.content.TabContentItem
+import com.smedialink.smartpanel.model.SmartPanelTab
 import kotlinx.android.synthetic.main.bots_content_page.view.*
 
 /**
@@ -18,7 +17,7 @@ import kotlinx.android.synthetic.main.bots_content_page.view.*
 @SuppressLint("ViewConstructor")
 class SmartBotContentView(
     context: Context,
-    content: TabContent,
+    content: SmartPanelTab,
     listener: SmartPanelView.Listener?
 ) : FrameLayout(context) {
 
@@ -28,19 +27,6 @@ class SmartBotContentView(
         adapter = SmartBotContentAdapter().apply { setHasStableIds(true) }
 
         View.inflate(context, R.layout.bots_content_page, this)
-
-        if (content is TabContentItem) {
-            if(content.label != 0) {
-                bot_name.text = context.getString(content.label)
-            }
-
-            bot_name.visibility =
-                if (content.contentType == TabContent.Type.ADVERTISEMENT) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
-        }
 
         with(recycler) {
             adapter = this@SmartBotContentView.adapter

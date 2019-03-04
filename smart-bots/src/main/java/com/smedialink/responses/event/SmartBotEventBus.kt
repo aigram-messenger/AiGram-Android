@@ -1,6 +1,6 @@
 package com.smedialink.responses.event
 
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import io.reactivex.subjects.BehaviorSubject
 
 class SmartBotEventBus {
@@ -22,9 +22,10 @@ class SmartBotEventBus {
     }
 
     sealed class Event {
-        class BotInstalled(val type: NeuroBotType) : Event()
+        class BotInstalled(val type: SmartBotType) : Event()
+        class BotAnswerChosen(val botType: SmartBotType, val tag: String, val position: Int, val userId: Int) : Event()
         class BotsRefreshed(val refreshPanel: Boolean) : Event()
-        class BotsPurchasesList(val list: List<NeuroBotType>) : Event()
+        class BotsPurchasesList(val list: List<SmartBotType>) : Event()
         object Empty : Event()
     }
 }

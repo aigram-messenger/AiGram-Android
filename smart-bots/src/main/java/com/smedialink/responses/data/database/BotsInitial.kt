@@ -1,132 +1,167 @@
 package com.smedialink.responses.data.database
 
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 
 object BotsInitial {
 
     fun getAll(): List<ShopDbModel> {
         return listOf(
             ShopDbModel(
-                id = NeuroBotType.ASSISTANT.name,
-                smartBotType = NeuroBotType.ASSISTANT,
+                id = SmartBotType.ASSISTANT.name,
+                smartBotType = SmartBotType.ASSISTANT,
                 type = ShopDbModel.Type.INSTALLED),
             ShopDbModel(
-                    id = NeuroBotType.DEADPOOL.name,
-                    smartBotType = NeuroBotType.DEADPOOL,
+                    id = SmartBotType.DEADPOOL.name,
+                    smartBotType = SmartBotType.DEADPOOL,
                     type = ShopDbModel.Type.INSTALLED),
             ShopDbModel(
-                id = NeuroBotType.CHURCHILL.name,
-                smartBotType = NeuroBotType.CHURCHILL,
+                id = SmartBotType.CHURCHILL.name,
+                smartBotType = SmartBotType.CHURCHILL,
                 type = ShopDbModel.Type.INSTALLED),
             ShopDbModel(
-                id = NeuroBotType.MONROE.name,
-                smartBotType = NeuroBotType.MONROE,
+                id = SmartBotType.MONROE.name,
+                smartBotType = SmartBotType.MONROE,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.CONFUCIUS.name,
-                smartBotType = NeuroBotType.CONFUCIUS,
+                id = SmartBotType.CONFUCIUS.name,
+                smartBotType = SmartBotType.CONFUCIUS,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.YODA.name,
-                smartBotType = NeuroBotType.YODA,
+                id = SmartBotType.YODA.name,
+                smartBotType = SmartBotType.YODA,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.CHANEL.name,
-                smartBotType = NeuroBotType.CHANEL,
+                id = SmartBotType.CHANEL.name,
+                smartBotType = SmartBotType.CHANEL,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.MEMES.name,
-                smartBotType = NeuroBotType.MEMES,
+                id = SmartBotType.MEMES.name,
+                smartBotType = SmartBotType.MEMES,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.SOVIET_FILMS.name,
-                smartBotType = NeuroBotType.SOVIET_FILMS,
+                id = SmartBotType.SOVIET_FILMS.name,
+                smartBotType = SmartBotType.SOVIET_FILMS,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.TRADE_BINBANK.name,
-                smartBotType = NeuroBotType.TRADE_BINBANK,
+                id = SmartBotType.TRADE_BINBANK.name,
+                smartBotType = SmartBotType.TRADE_BINBANK,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.CELENTANO.name,
-                smartBotType = NeuroBotType.CELENTANO,
+                id = SmartBotType.CELENTANO.name,
+                smartBotType = SmartBotType.CELENTANO,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.CORLEONE.name,
-                smartBotType = NeuroBotType.CORLEONE,
+                id = SmartBotType.CORLEONE.name,
+                smartBotType = SmartBotType.CORLEONE,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.TERMINATOR.name,
-                smartBotType = NeuroBotType.TERMINATOR,
+                id = SmartBotType.TERMINATOR.name,
+                smartBotType = SmartBotType.TERMINATOR,
                 type = ShopDbModel.Type.PAID
             ),
 
             ShopDbModel(
-                id = NeuroBotType.EINSTEIN.name,
-                smartBotType = NeuroBotType.EINSTEIN,
+                id = SmartBotType.EINSTEIN.name,
+                smartBotType = SmartBotType.EINSTEIN,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.TSOY.name,
-                smartBotType = NeuroBotType.TSOY,
+                id = SmartBotType.TSOY.name,
+                smartBotType = SmartBotType.TSOY,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.NAPOLEON.name,
-                smartBotType = NeuroBotType.NAPOLEON,
+                id = SmartBotType.NAPOLEON.name,
+                smartBotType = SmartBotType.NAPOLEON,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.DAENERYS.name,
-                smartBotType = NeuroBotType.DAENERYS,
+                id = SmartBotType.DAENERYS.name,
+                smartBotType = SmartBotType.DAENERYS,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.TERESA.name,
-                smartBotType = NeuroBotType.TERESA,
+                id = SmartBotType.TERESA.name,
+                smartBotType = SmartBotType.TERESA,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.KARLSON.name,
-                smartBotType = NeuroBotType.KARLSON,
+                id = SmartBotType.KARLSON.name,
+                smartBotType = SmartBotType.KARLSON,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.SCOOBY_DOO.name,
-                smartBotType = NeuroBotType.SCOOBY_DOO,
+                id = SmartBotType.SCOOBY_DOO.name,
+                smartBotType = SmartBotType.SCOOBY_DOO,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.SPONGE_BOB.name,
-                smartBotType = NeuroBotType.SPONGE_BOB,
+                id = SmartBotType.SPONGE_BOB.name,
+                smartBotType = SmartBotType.SPONGE_BOB,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.KUNG_FU_PANDA.name,
-                smartBotType = NeuroBotType.KUNG_FU_PANDA,
+                id = SmartBotType.KUNG_FU_PANDA.name,
+                smartBotType = SmartBotType.KUNG_FU_PANDA,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.SHREK.name,
-                smartBotType = NeuroBotType.SHREK,
+                id = SmartBotType.SHREK.name,
+                smartBotType = SmartBotType.SHREK,
                 type = ShopDbModel.Type.INSTALLED
             ),
             ShopDbModel(
-                id = NeuroBotType.JON_SNOW.name,
-                smartBotType = NeuroBotType.JON_SNOW,
+                id = SmartBotType.JON_SNOW.name,
+                smartBotType = SmartBotType.JON_SNOW,
                 type = ShopDbModel.Type.PAID
             ),
             ShopDbModel(
-                id = NeuroBotType.TYRION_LANNISTER.name,
-                smartBotType = NeuroBotType.TYRION_LANNISTER,
+                id = SmartBotType.TYRION_LANNISTER.name,
+                smartBotType = SmartBotType.TYRION_LANNISTER,
+                type = ShopDbModel.Type.PAID
+            ),
+            ShopDbModel(
+                id = SmartBotType.HOLIDAYS.name,
+                smartBotType = SmartBotType.HOLIDAYS,
+                type = ShopDbModel.Type.INSTALLED
+            ),
+            ShopDbModel(
+                id = SmartBotType.PUSHKIN.name,
+                smartBotType = SmartBotType.PUSHKIN,
+                type = ShopDbModel.Type.PAID
+            ),
+            ShopDbModel(
+                id = SmartBotType.LENIN.name,
+                smartBotType = SmartBotType.LENIN,
+                type = ShopDbModel.Type.PAID
+            ),
+            ShopDbModel(
+                id = SmartBotType.LOTR.name,
+                smartBotType = SmartBotType.LOTR,
+                type = ShopDbModel.Type.PAID
+            ),
+            ShopDbModel(
+                id = SmartBotType.MINIONS.name,
+                smartBotType = SmartBotType.MINIONS,
+                type = ShopDbModel.Type.PAID
+            ),
+            ShopDbModel(
+                id = SmartBotType.SIMPSONS.name,
+                smartBotType = SmartBotType.SIMPSONS,
+                type = ShopDbModel.Type.PAID
+            ),
+            ShopDbModel(
+                id = SmartBotType.SOUTH_PARK.name,
+                smartBotType = SmartBotType.SOUTH_PARK,
                 type = ShopDbModel.Type.PAID
             )
         )

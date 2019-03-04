@@ -41,8 +41,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.smedialink.aigram.purchases.domain.model.ShopItem;
-import com.smedialink.responses.domain.model.NeuroBotType;
+import com.smedialink.responses.BotsRemoteEventsUseCase;
+import com.smedialink.responses.domain.model.enums.SmartBotType;
+import com.smedialink.smartpanel.model.content.TabShopItem;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -128,6 +129,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private UndoView undoView;
 
     private float additionalFloatingTranslation;
+
+    int userId = UserConfig.getInstance(currentAccount).getClientUserId();
+
+    private BotsRemoteEventsUseCase remoteEventsUseCase =
+            new BotsRemoteEventsUseCase(ApplicationLoader.applicationContext, userId);
 
     //private ImageView unreadFloatingButton;
     //private FrameLayout unreadFloatingButtonContainer;
@@ -238,6 +244,17 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             DataQuery.getInstance(currentAccount).checkFeaturedStickers();
             dialogsLoaded[currentAccount] = true;
         }
+
+        boolean botsAlreadyInstalled = MessagesController.getMainSettings(currentAccount).getBoolean("aigramBotsInstalled", false);
+        if (!botsAlreadyInstalled) {
+            int userId = UserConfig.getInstance(currentAccount).getClientUserId();
+            remoteEventsUseCase.sendAppInstalledEvent(userId, () ->
+                    MessagesController.getMainSettings(currentAccount).edit().putBoolean("aigramBotsInstalled", true).apply());
+        }
+
+        remoteEventsUseCase.fetchStatistic();
+        remoteEventsUseCase.fetchVotes();
+
         return true;
     }
 
@@ -276,6 +293,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             undoView.hide(true, false);
         }
         delegate = null;
+        remoteEventsUseCase.dispose();
     }
 
     @Override
@@ -1367,7 +1385,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
 
                 @Override
-                public void showBotPopup(NeuroBotType botType) {
+                public void showBotPopup(SmartBotType botType) {
 
                 }
 
@@ -1377,7 +1395,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
 
                 @Override
-                public void logBotInstall(NeuroBotType type) {
+                public void logBotInstall(SmartBotType type) {
 
                 }
 
@@ -1392,7 +1410,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
 
                 @Override
-                public void showBotInfo(ShopItem shopItem) {
+                public void showBotInfo(TabShopItem shopItem) {
 
                 }
 

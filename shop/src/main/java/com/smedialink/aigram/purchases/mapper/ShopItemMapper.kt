@@ -2,8 +2,8 @@ package com.smedialink.aigram.purchases.mapper
 
 import com.smedialink.aigram.purchases.PurchaseHelper
 import com.smedialink.aigram.purchases.domain.model.ShopItem
-import com.smedialink.aigram.purchases.provider.IconsProvider
 import com.smedialink.responses.data.database.ShopDbModel
+import com.smedialink.responses.provider.IconsProvider
 
 object ShopItemMapper {
 

@@ -62,24 +62,25 @@ import android.widget.Toast;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ContactsController;
+import org.telegram.messenger.FileLog;
+import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.BuildVars;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SRPHelper;
+import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.SmsReceiver;
+import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
-import org.telegram.messenger.UserConfig;
-import org.telegram.messenger.Utilities;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -88,6 +89,7 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Cells.CheckBoxCell;
+import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
@@ -511,6 +513,43 @@ public class LoginActivity extends BaseFragment {
         showDialog(builder.create());
     }
 
+
+    private void setProxyEnabled(boolean enabled) {
+
+        SharedConfig.ProxyInfo proxy = new SharedConfig.ProxyInfo(
+                "35.228.255.140",
+                1080,
+                "telegram",
+                "ScqkubmuAMj3rQ37",
+                ""
+        );
+
+        if (enabled) {
+            SharedPreferences.Editor editor = MessagesController.getGlobalMainSettings().edit();
+            editor.putBoolean("proxy_enabled", true);
+            editor.putString("proxy_ip", proxy.address);
+            editor.putInt("proxy_port", proxy.port);
+            editor.putString("proxy_user", proxy.username);
+            editor.putString("proxy_pass", proxy.password);
+            editor.commit();
+
+            SharedConfig.currentProxy = SharedConfig.addProxy(proxy);
+            ConnectionsManager.setProxySettings(true, proxy.address, proxy.port, proxy.username, proxy.password, proxy.secret);
+        } else {
+            SharedPreferences.Editor editor = MessagesController.getGlobalMainSettings().edit();
+            editor.putBoolean("proxy_enabled", false);
+            editor.putString("proxy_ip", "");
+            editor.putInt("proxy_port", 1080);
+            editor.putString("proxy_user", "");
+            editor.putString("proxy_pass", "");
+            editor.commit();
+
+            SharedConfig.deleteProxy(proxy);
+            ConnectionsManager.setProxySettings(false, "", 1080, "", "", "");
+        }
+        NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged);
+    }
+
     private void showEditDoneProgress(final boolean show) {
         if (doneItemAnimation != null) {
             doneItemAnimation.cancel();
@@ -727,6 +766,9 @@ public class LoginActivity extends BaseFragment {
         private TextView textView;
         private TextView textView2;
         private CheckBoxCell checkBoxCell;
+
+        private TextCheckCell proxySwitcher;
+        private TextView proxySwitcherInfo;
 
         private int countryState = 0;
 
@@ -997,12 +1039,32 @@ public class LoginActivity extends BaseFragment {
             });
 
             textView2 = new TextView(context);
-            textView2.setText(LocaleController.getString("StartText", R.string.StartText));
+            textView2.setText(LocaleController.getInternalString(R.string.StartText));
             textView2.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText6));
             textView2.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             textView2.setGravity(LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT);
             textView2.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             addView(textView2, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 28, 0, 10));
+
+            View divider = new View(context);
+            divider.setBackgroundColor(Theme.getColor(Theme.key_graySection));
+            addView(divider, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(1), LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 16, 0, 0));
+
+            proxySwitcher = new TextCheckCell(context, 0);
+            proxySwitcher.setTextAndCheck(LocaleController.getInternalString(R.string.UseProxySettings), false, false);
+            proxySwitcher.setOnClickListener(v -> {
+                proxySwitcher.setChecked(!proxySwitcher.isChecked());
+                setProxyEnabled(proxySwitcher.isChecked());
+            });
+            addView(proxySwitcher, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 8, -16, 0));
+
+            proxySwitcherInfo = new TextView(context);
+            proxySwitcherInfo.setText(LocaleController.getInternalString(R.string.UseProxySettingsInfo));
+            proxySwitcherInfo.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText6));
+            proxySwitcherInfo.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            proxySwitcherInfo.setGravity(LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT);
+            proxySwitcherInfo.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
+            addView(proxySwitcherInfo, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 0, 0, 0));
 
             if (newAccount) {
                 checkBoxCell = new CheckBoxCell(context, 2);
@@ -1385,7 +1447,7 @@ public class LoginActivity extends BaseFragment {
 
         @Override
         public String getHeaderName() {
-            return LocaleController.getString("YourPhone", R.string.YourPhone);
+            return LocaleController.getInternalString(R.string.YourPhone);
         }
 
         @Override

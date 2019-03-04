@@ -56,7 +56,6 @@
         style="@style/BotShopDescriptionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/bot_label"
         app:layout_constraintEnd_toStartOf="@+id/shop_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bot_new_label"

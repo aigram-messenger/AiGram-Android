@@ -13,7 +13,7 @@ import com.smedialink.aigram.purchases.domain.ManageShopItemUseCase;
 import com.smedialink.aigram.purchases.domain.model.ShopItem;
 import com.smedialink.aigram.purchases.domain.repository.ShopRepository;
 import com.smedialink.responses.BotsRemoteEventsUseCase;
-import com.smedialink.responses.domain.model.NeuroBotType;
+import com.smedialink.responses.domain.model.enums.SmartBotType;
 import com.smedialink.smartpanel.view.NeuroBotInfoView;
 
 import org.telegram.messenger.R;
@@ -92,7 +92,7 @@ public class NeuroBotInfoDialog extends Dialog implements NeuroBotInfoView.Neuro
     }
 
     @Override
-    public void onRatingChosen(NeuroBotType type, int rating) {
+    public void onRatingChosen(SmartBotType type, int rating) {
         remoteEventsUseCase.sendBotRatingEvent(type, userId, rating);
     }
 

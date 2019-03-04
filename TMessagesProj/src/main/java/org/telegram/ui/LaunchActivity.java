@@ -42,7 +42,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.smedialink.aigram.purchases.PurchaseHelper;
-import com.smedialink.responses.BotsRemoteEventsUseCase;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -119,8 +118,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
     private static ArrayList<BaseFragment> rightFragmentsStack = new ArrayList<>();
     private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
 
-    private BotsRemoteEventsUseCase remoteEventsUseCase =
-            new BotsRemoteEventsUseCase(ApplicationLoader.applicationContext, 0);
+    PurchaseHelper purchaseHelper = PurchaseHelper.Companion.get();
 
     private ActionBarLayout actionBarLayout;
     private ActionBarLayout layersActionBarLayout;
@@ -588,6 +586,10 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             FileLog.e(e);
         }
         MediaController.getInstance().setBaseActivity(this, true);
+
+        purchaseHelper.initWith(this);
+        purchaseHelper.start();
+        purchaseHelper.fetchSkuDetails();
     }
 
     public void switchToAccount(int account, boolean removeAll) {
@@ -695,13 +697,6 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
         NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.openArticle);
         NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.hasNewContactsToImport);
         updateCurrentConnectionState(currentAccount);
-
-        boolean botsAlreadyInstalled = MessagesController.getMainSettings(currentAccount).getBoolean("aigramBotsInstalled", false);
-        if (!botsAlreadyInstalled) {
-            int userId = UserConfig.getInstance(currentAccount).getClientUserId();
-            remoteEventsUseCase.sendAppInstalledEvent(userId, () ->
-                    MessagesController.getMainSettings(currentAccount).edit().putBoolean("aigramBotsInstalled", true).apply());
-        }
     }
 
     private void checkLayout() {
@@ -2366,7 +2361,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
 
     @Override
     protected void onDestroy() {
-        remoteEventsUseCase.dispose();
+        purchaseHelper.stop();
         if (PhotoViewer.getPipInstance() != null) {
             PhotoViewer.getPipInstance().destroyPhotoViewer();
         }

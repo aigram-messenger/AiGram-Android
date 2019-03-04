@@ -77,12 +77,12 @@ import android.widget.Toast;
 
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.smedialink.aigram.purchases.PurchaseHelper;
-import com.smedialink.aigram.purchases.domain.model.ShopItem;
 import com.smedialink.responses.BotsRemoteEventsUseCase;
 import com.smedialink.responses.data.SmartReplier;
 import com.smedialink.responses.domain.Replier;
-import com.smedialink.responses.domain.model.NeuroBotType;
-import com.smedialink.responses.domain.model.SmartBotResponse;
+import com.smedialink.responses.domain.model.enums.SmartBotType;
+import com.smedialink.responses.domain.model.response.SmartBotResponse;
+import com.smedialink.smartpanel.model.content.TabShopItem;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -900,15 +900,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (replier == null) {
             replier = new SmartReplier(ApplicationLoader.applicationContext);
         }
-
-        remoteEventsUseCase.fetchStatistic();
         return true;
     }
 
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
-        purchaseHelper.stop();
         if (chatActivityEnterView != null) {
             chatActivityEnterView.onDestroy();
         }
@@ -3743,18 +3740,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
 
             @Override
-            public void showBotInfo(ShopItem shopItem) {
+            public void showBotInfo(TabShopItem shopItem) {
                 if (neuroBotDialog == null) {
                     int userId = UserConfig.getInstance(currentAccount).getClientUserId();
                     neuroBotDialog = new NeuroBotInfoDialog(context, userId);
                 }
 
-                neuroBotDialog.showNeuroBot(shopItem);
+                neuroBotDialog.showNeuroBot(shopItem.getItem());
                 showDialog(neuroBotDialog);
             }
 
             @Override
-            public void showBotPopup(NeuroBotType botType) {
+            public void showBotPopup(SmartBotType botType) {
                 if (neuroBotPopupDialog == null) {
                     neuroBotPopupDialog = new NeuroBotPopupDialog(context);
                 }
@@ -3762,7 +3759,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                 neuroBotPopupDialog.setListener(new NeuroBotPopupDialog.Listener() {
                     @Override
-                    public void onInfoClick(ShopItem shopItem) {
+                    public void onInfoClick(TabShopItem shopItem) {
                         neuroBotPopupDialog.dismiss();
                         showBotInfo(shopItem);
                     }
@@ -3794,7 +3791,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
 
             @Override
-            public void logBotInstall(NeuroBotType type) {
+            public void logBotInstall(SmartBotType type) {
                 int userId = UserConfig.getInstance(currentAccount).getClientUserId();
                 remoteEventsUseCase.sendBotInstalledEvent(type, userId);
             }
@@ -4204,14 +4201,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             chatActivityEnterView.setFieldText(oldMessage);
         }
         fixLayoutInternal();
-
-        if (getParentActivity() != null) {
-            purchaseHelper.initWith(getParentActivity());
-            purchaseHelper.start();
-            purchaseHelper.fetchSkuDetails();
-        }
-
-        remoteEventsUseCase.fetchVotes();
 
         return fragmentView;
     }
@@ -9549,7 +9538,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private void sendMessageToBots(MessageObject message, boolean forcedPopup) {
         String sentence = message.messageText.toString();
 
-        replier.getAvailableResponses(sentence, new Replier.Callback() {
+        int userId = 0;
+
+        if (currentUser != null) {
+            userId = currentUser.id;
+        }
+
+        replier.getAvailableResponses(sentence, userId, new Replier.Callback() {
             @Override
             public void onSuccess(@NonNull List<SmartBotResponse> responses) {
                 if (message != lastDetectedMessage && responses.size() > 0) {
@@ -9577,14 +9572,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private boolean shouldNotCallBots() {
         boolean canNotWriteToChat;
-        boolean chatIsNotChannel;
 
         if (currentChat != null) {
             canNotWriteToChat = !ChatObject.canWriteToChat(currentChat);
-            chatIsNotChannel = !ChatObject.isChannel(currentChat);
         } else {
             canNotWriteToChat = false;
-            chatIsNotChannel = false;
         }
 
         boolean botDetected = false;
@@ -9593,7 +9585,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             botDetected = currentUser.bot;
         }
 
-        return canNotWriteToChat || chatIsNotChannel || botDetected;
+        return canNotWriteToChat || botDetected;
     }
 
     private boolean shouldPopup(boolean forcedPopup) {
@@ -9601,8 +9593,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         boolean answersAvailable = smartResponsesCurrent.size() > 0;
         boolean isWriting = chatActivityEnterView.getEditField().length() != 0;
         boolean isReplying = chatActivityEnterView.isReplying();
+        boolean isPopupVisible = chatActivityEnterView.isPopupShowing();
 
-        return forcedPopup || (!isWriting && !isReplying && autoPopup && answersAvailable);
+        return forcedPopup || (!isWriting && !isReplying && !isPopupVisible && autoPopup && answersAvailable);
     }
 
     private void handleResponses(List<SmartBotResponse> responses, boolean forcedPopup) {

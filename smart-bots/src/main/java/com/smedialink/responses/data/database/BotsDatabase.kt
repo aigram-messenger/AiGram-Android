@@ -9,10 +9,21 @@ import android.content.Context
 import com.smedialink.responses.data.database.converter.Converter
 import java.util.concurrent.Executors
 
-@Database(entities = [ShopDbModel::class], version = 4)
+@Database(
+    entities = [
+        ShopDbModel::class,
+        HolidaysDbModel::class,
+        RecentDbModel::class
+    ],
+    version = 6,
+    exportSchema = false
+)
 @TypeConverters(Converter::class)
 abstract class BotsDatabase : RoomDatabase() {
+
     abstract fun botDao(): BotDao
+    abstract fun holidaysDao(): HolidaysDao
+    abstract fun recentDao(): RecentDao
 
     companion object {
         private var INSTANCE: BotsDatabase? = null

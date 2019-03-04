@@ -3,7 +3,7 @@ package com.smedialink.responses
 import android.content.Context
 import android.util.Log
 import com.smedialink.responses.data.repository.SmartBotRepository
-import com.smedialink.responses.domain.model.NeuroBotType
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
@@ -27,7 +27,7 @@ class BotsRemoteEventsUseCase(context: Context, private val userId: Long) {
             .also { disposables.add(it) }
     }
 
-    fun sendBotInstalledEvent(type: NeuroBotType, userId: Long) {
+    fun sendBotInstalledEvent(type: SmartBotType, userId: Long) {
         repository.sendBotInstallEvent(type, userId)
             .subscribeOn(Schedulers.io())
             .subscribe({
@@ -36,7 +36,7 @@ class BotsRemoteEventsUseCase(context: Context, private val userId: Long) {
             .also { disposables.add(it) }
     }
 
-    fun sendBotRatingEvent(type: NeuroBotType, userId: Long, rating: Int) {
+    fun sendBotRatingEvent(type: SmartBotType, userId: Long, rating: Int) {
         repository.sendBotRating(type, userId, rating)
             .subscribeOn(Schedulers.io())
             .subscribe({

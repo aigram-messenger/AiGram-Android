@@ -8,8 +8,10 @@ import com.smedialink.responses.data.database.ShopDbModel
 import com.smedialink.responses.data.factory.ActualResourceFactory
 import com.smedialink.responses.data.network.SmartBotsApi
 import com.smedialink.responses.domain.factory.ResourceFactory
-import com.smedialink.responses.domain.model.NeuroBotType
 import com.smedialink.responses.domain.model.SmartBot
+import com.smedialink.responses.domain.model.bot.SmartBotNeuro
+import com.smedialink.responses.domain.model.bot.SmartBotHolidays
+import com.smedialink.responses.domain.model.enums.SmartBotType
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -38,13 +40,16 @@ class SmartBotRepository(context: Context) {
     }
 
     fun getAllAvailable(): List<SmartBot> {
-
-        cacheNewBotsIfAvailable()
-
         return botsDao.getAll()
             .filter { it.type == ShopDbModel.Type.INSTALLED }
-            .map { SmartBot(factory, it.smartBotType) }
-            .sortedBy { it.type.position }
+            .sortedBy { it.smartBotType.position }
+            .map {
+                if (SmartBotType.isNeuro(it.smartBotType)) {
+                    SmartBotNeuro(factory, it.smartBotType)
+                } else {
+                    SmartBotHolidays(factory, it.smartBotType)
+                }
+            }
     }
 
 
@@ -65,7 +70,7 @@ class SmartBotRepository(context: Context) {
             emitter.onComplete()
         }
 
-    fun savePurchases(purchases: List<NeuroBotType>): Completable =
+    fun savePurchases(purchases: List<SmartBotType>): Completable =
         Completable.create { emitter ->
             val currentPaidBots = botsDao.getByInstallType(ShopDbModel.Type.PAID)
             val purchased = purchases.toSet()
@@ -98,7 +103,7 @@ class SmartBotRepository(context: Context) {
             }
         }
 
-    fun sendBotInstallEvent(type: NeuroBotType, userId: Long): Completable {
+    fun sendBotInstallEvent(type: SmartBotType, userId: Long): Completable {
         val installed = botsDao.getInstallEvent(type)
 
         if (installed == 1) {
@@ -122,7 +127,7 @@ class SmartBotRepository(context: Context) {
             .doOnComplete { botsDao.saveInstallEvent(type) }
     }
 
-    fun sendBotRating(type: NeuroBotType, userId: Long, rating: Int): Single<Int> =
+    fun sendBotRating(type: SmartBotType, userId: Long, rating: Int): Single<Int> =
         botsApi.voteForBot(
             botId = type.label,
             userId = userId,
@@ -156,7 +161,7 @@ class SmartBotRepository(context: Context) {
             }
             .subscribeOn(Schedulers.io())
 
-    private fun markAsInstalled(smartBotType: NeuroBotType) {
+    private fun markAsInstalled(smartBotType: SmartBotType) {
         val bot = botsDao.getByType(smartBotType).copy(type = ShopDbModel.Type.INSTALLED)
         botsDao.update(bot)
     }
